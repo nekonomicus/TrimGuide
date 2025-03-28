@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acetabular Rim Trimming Guide - Validation Flowchart | S. Schaible</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* --- Light & Premium Palette --- */
+            --bg-lightest: #FFFFFF;      /* Primary background (Slide) */
+            --bg-medium: #F8FAFC;        /* Slightly off-white (Steps) */
+            --border-color: #E2E8F0;     /* Subtle borders (Lighter) */
+            --shadow-color: rgba(0, 0, 0, 0.05); /* Softer shadow */
+
+            --text-primary: #1E293B;     /* Dark Slate for main text */
+            --text-secondary: #475569;   /* Medium Slate for subtitles */
+            --text-muted: #64748B;       /* Lighter Slate for less important */
+            --text-on-accent: #FFFFFF;   /* White text on colored badges */
+
+            --accent-primary: #2563EB;   /* Vivid Blue */
+            --accent-secondary: #059669;   /* Emerald Green */
+            --milestone-color: var(--accent-secondary); /* Use green for milestones */
+
+            /* --- Spacing Unit --- */
+            --space-unit: 4px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif; }
+        html { font-size: 15px; /* Slightly smaller base font */ }
+        body { background-color: var(--bg-medium); color: var(--text-primary); line-height: 1.45; height: 100vh; display: flex; justify-content: center; align-items: center; padding: calc(var(--space-unit) * 3); overflow: hidden; }
+
+        .slide-container { width: 100%; max-width: 1350px; height: calc(100vh - (var(--space-unit) * 6)); max-height: 780px; aspect-ratio: 16 / 9; background-color: var(--bg-lightest); border-radius: calc(var(--space-unit) * 1.5); box-shadow: 0 6px 20px var(--shadow-color); display: flex; flex-direction: column; padding: calc(var(--space-unit) * 6); overflow: hidden; border: 1px solid var(--border-color); }
+
+        header { text-align: left; margin-bottom: calc(var(--space-unit) * 4); padding-bottom: calc(var(--space-unit) * 3); border-bottom: 1px solid var(--border-color); }
+        h1 { font-size: 1.5rem; font-weight: 600; color: var(--text-primary); margin-bottom: calc(var(--space-unit) * 0.5); }
+        .subtitle { font-size: 0.9rem; color: var(--text-secondary); font-weight: 400; }
+
+        .phases-container { display: flex; flex: 1; gap: calc(var(--space-unit) * 5); overflow: hidden; }
+        .phase { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        .phase-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: calc(var(--space-unit) * 3); padding-bottom: calc(var(--space-unit) * 2); border-bottom: 1px solid var(--border-color); padding: 0 calc(var(--space-unit) * 1); }
+        .phase-title { font-size: 1.0rem; font-weight: 600; color: var(--text-primary); }
+        .phase-badge { padding: 2px 8px; border-radius: 10px; font-size: 0.65rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.03em; }
+        .pilot .phase-badge { background-color: var(--accent-primary); color: var(--text-on-accent); }
+        .main .phase-badge { background-color: var(--accent-secondary); color: var(--text-on-accent); }
+
+        .steps-container { flex: 1; overflow-y: auto; padding: calc(var(--space-unit) * 1); margin: calc(var(--space-unit) * -1); }
+        .steps-container::-webkit-scrollbar { width: 5px; }
+        .steps-container::-webkit-scrollbar-track { background: transparent; }
+        .steps-container::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 5px; }
+        .steps-container::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        .step { background: var(--bg-medium); border-radius: 4px; padding: calc(var(--space-unit) * 2.5); margin-bottom: calc(var(--space-unit) * 2.5); border: 1px solid var(--border-color); position: relative; }
+        .step.milestone { border-left: 3px solid var(--milestone-color); padding-left: calc(calc(var(--space-unit) * 2.5) - 3px + var(--space-unit) * 1.5); background: #F0FDF4; border-color: #A7F3D0; }
+
+        .step-header { display: flex; align-items: center; margin-bottom: calc(var(--space-unit) * 1.5); }
+        .step-number { width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; margin-right: calc(var(--space-unit) * 2); flex-shrink: 0; color: var(--text-on-accent); }
+        .pilot .step-number { background-color: var(--accent-primary); }
+        .main .step-number { background-color: var(--accent-secondary); }
+        .step-title { font-size: 0.85rem; font-weight: 500; color: var(--text-primary); }
+        .milestone-badge { margin-left: auto; padding: 2px 6px; border-radius: 4px; background-color: var(--milestone-color); color: var(--text-on-accent); font-size: 0.6rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1; }
+
+        /* Grouping section within step */
+        .step-group { margin-top: calc(var(--space-unit) * 1.5); padding-left: calc(18px + var(--space-unit) * 2); /* Align with title text */ }
+        .group-title { font-size: 0.65rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: calc(var(--space-unit) * 0.5); color: var(--text-muted); }
+        .pilot .group-title { color: var(--accent-primary); opacity: 0.8; }
+        .main .group-title { color: var(--accent-secondary); opacity: 0.8; }
+        .group-item { font-size: 0.75rem; color: var(--text-secondary); position: relative; padding-left: calc(var(--space-unit) * 2.5); margin-bottom: calc(var(--space-unit) * 0.5); line-height: 1.3; }
+        .group-item:before { content: "•"; position: absolute; left: 0; top: 1px; font-weight: 600; color: var(--text-muted); font-size: 0.8em; }
+        /* --- UPDATED NOTE USAGE --- */
+        .note { font-style: italic; color: var(--text-muted); margin-left: 4px; }
+
+        footer { margin-top: calc(var(--space-unit) * 3); padding-top: calc(var(--space-unit) * 2); border-top: 1px solid var(--border-color); font-size: 0.7rem; color: var(--text-muted); display: flex; justify-content: space-between; align-items: center; }
+        .footer-left, .footer-right { flex-basis: 50%; }
+        .footer-right { text-align: right; }
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <header>
+            <h1>Cartilage-Seated Rim Trimming Guide: Validation Study</h1>
+            <div class="subtitle">Study Design Flowchart: Pilot (3D Prints) & Main (Cadaveric) Phases</div>
+        </header>
+
+        <div class="phases-container">
+            <div class="phase pilot">
+                <div class="phase-header">
+                    <div class="phase-title">Pilot Phase</div>
+                    <div class="phase-badge">3D Prints (n=6)</div>
+                </div>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-header"><div class="step-number">1</div><div class="step-title">Data Prep</div></div>
+                        <div class="step-group"><div class="group-title">Action</div><div class="group-item">Auto-segment MRI datasets (Criteria: LCEA > 40°, no PAO, RI < 30%)</div></div>
+                        <div class="step-group"><div class="group-title">Output</div><div class="group-item">3D segmentations for printing</div></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-header"><div class="step-number">2</div><div class="step-title">Model Fabrication & Imaging</div></div>
+                        <div class="step-group"><div class="group-title">Action</div>
+                            <div class="group-item">3D-print hemipelvis models <span class="note">(radiopaque)</span></div>
+                            <div class="group-item">Acquire Standard/Artificial X-rays <span class="note">(from MRI/Print)</span></div>
+                        </div>
+                        <div class="step-group"><div class="group-title">Output</div><div class="group-item">Physical 3D models + matched X-rays <span class="note">(Sharp angle)</span></div></div>
+                    </div>
+                    <div class="step">
+                        <div class="step-header"><div class="step-number">3</div><div class="step-title">Guide Planning & Production</div></div>
+                        <div class="step-group"><div class="group-title">Action</div>
+                            <div class="group-item">Target trim depth from pre-trim Sharp angle</div>
+                            <div class="group-item">Design/print the pilot guide (90° arc)</div>
+                        </div>
+                        <div class="step-group"><div class="group-title">Output</div><div class="group-item">Pilot guide prototype (V1.x)</div></div>
+                    </div>
+                    <div class="step milestone">
+                        <div class="step-header"><div class="step-number">4</div><div class="step-title">Guided Trimming & Evaluation</div><div class="milestone-badge">Milestone</div></div>
+                        <div class="step-group"><div class="group-title">Action</div>
+                            <div class="group-item">Rim trimming on printed models with the guide</div>
+                            <div class="group-item">Take Post-trim Standard/Artificial X-rays</div>
+                        </div>
+                        <div class="step-group"><div class="group-title">Measurement</div>
+                            <div class="group-item">Compare planned vs. achieved trim depth (Target: ±1 mm) and arc (Target: ±5°)</div>
+                            <div class="group-item">Assess Sharp angle change</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-header"><div class="step-number">5</div><div class="step-title">Analysis & Refinement</div></div>
+                        <div class="step-group"><div class="group-title">Action</div><div class="group-item">Compile accuracy data <span class="note">(caliper, X-ray angles)</span>, refine guide fit, finalize measurement SOPs</div></div>
+                        <div class="step-group"><div class="group-title">Output</div>
+                            <div class="group-item">Updated guide design (V2.0)</div>
+                            <div class="group-item">Validated Measurement SOPs</div>
+                            <div class="group-item">Baseline accuracy stats</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="phase main">
+                <div class="phase-header">
+                    <div class="phase-title">Main Phase: Validation</div>
+                    <div class="phase-badge">Cadavers (n=12 hips)</div>
+                </div>
+                <div class="steps-container">
+                    <div class="step milestone">
+                         <div class="step-header"><div class="step-number">1</div><div class="step-title">Cadaver & Baseline Prep</div><div class="milestone-badge">Milestone</div></div>
+                        <div class="step-group"><div class="group-title">Action</div>
+                            <div class="group-item">Pre-op MRI, Standard/Artificial X-rays</div>
+                            <div class="group-item">Auto-segment MRI</div>
+                        </div>
+                         <div class="step-group"><div class="group-title">Output/Baseline</div>
+                            <div class="group-item">3D segmentation + Pre-op coverage metrics</div>
+                            <div class="group-item">Pre-op LCEA</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                         <div class="step-header"><div class="step-number">2</div><div class="step-title">Guide Planning & Production</div></div>
+                        <div class="step-group"><div class="group-title">Action</div>
+                            <div class="group-item">Target trim depth based on LCEA formulas</div>
+                            <div class="group-item">Design/print guide V1.0 (90° arc)</div>
+                        </div>
+                        <div class="step-group"><div class="group-title">Output</div>
+                            <div class="group-item">Patient-specific guide</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                         <div class="step-header"><div class="step-number">3</div><div class="step-title">Guided Trimming</div></div>
+                        <div class="step-group"><div class="group-title">Action</div><div class="group-item">Open rim trimming using the cartilage-seated guide</div></div>
+                    </div>
+                    <div class="step milestone">
+                         <div class="step-header"><div class="step-number">4</div><div class="step-title">Post-Op Imaging & Evaluation</div><div class="milestone-badge">Milestone</div></div>
+                        <div class="step-group"><div class="group-title">Action</div>
+                            <div class="group-item">Post-op MRI, Standard/Artificial X-rays</div>
+                            <div class="group-item">Post-op Segmentation</div>
+                        </div>
+                        <div class="step-group"><div class="group-title">Primary Aim Eval: Trim Accuracy</div>
+                            <div class="group-item">Method 1: Direct Caliper vs Plan (Target: ±1mm)</div>
+                            <div class="group-item">Method 2: MRI Segmentation Superposition vs Plan (Target: ±5° arc)</div>
+                        </div>
+                        <div class="step-group"><div class="group-title">Secondary Aim Eval: LCEA Prediction</div>
+                            <div class="group-item">Actual LCEA Δ <span class="note">(Std & Artif. X-rays)</span> vs Predicted Δ (Target: ±2°)</div>
+                        </div>
+                        <div class="step-group"><div class="group-title">Tertiary Aim Eval: Correlation & 3D Params</div>
+                             <div class="group-item">Correlate: Measured Depth vs LCEA Δ</div>
+                             <div class="group-item">Analyze 3D Coverage / Cartilage Area Changes</div>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <div class="step-header"><div class="step-number">5</div><div class="step-title">Final Analysis & Deliverables</div></div>
+                        <div class="step-group"><div class="group-title">Action</div><div class="group-item">Statistical comparison (planned vs. actual); accuracy, reliability, correlation</div></div>
+                        <div class="step-group"><div class="group-title">Output</div>
+                            <div class="group-item">Guide accuracy metrics (mean error ± SD)</div>
+                            <div class="group-item">Refined predictive model (depth vs. LCEA)</div>
+                            <div class="group-item">3D coverage impact</div>
+                            <div class="group-item">Final validation report</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+             <div class="footer-left">S. Schaible | Acetabular Guide Validation</div>
+             <div class="footer-right">Confidential | Status: March 27, 2025</div>
+        </footer>
+    </div>
+</body>
+</html>
