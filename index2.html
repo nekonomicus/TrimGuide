@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acetabular Rim Trimming Guide - Validation Flowchart | S. Schaible [Interactive v2]</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Variables (Light Mode) --- */
+        :root {
+            --bg-lightest: #FFFFFF;
+            --bg-medium: #F8FAFC;
+            --border-color: #E2E8F0;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --shadow-color-hover: rgba(0, 0, 0, 0.08); /* Slightly darker shadow on hover */
+            --text-primary: #1E293B;
+            --text-secondary: #475569;
+            --text-muted: #64748B;
+            --text-on-accent: #FFFFFF;
+            --accent-primary: #2563EB; /* Blue */
+            --accent-secondary: #059669; /* Green */
+            --milestone-color: var(--accent-secondary);
+            --milestone-bg: #F0FDF4;
+            --milestone-border: #A7F3D0;
+            --icon-color: var(--text-muted); /* Kept in case needed elsewhere */
+            --space-unit: 4px;
+            --transition-speed: 0.3s; /* General transition speed */
+            --hover-transition-speed: 0.2s; /* Faster transition for hover */
+        }
+
+        /* --- Dark Mode Variables --- */
+        body.dark-mode {
+            --bg-lightest: #1E293B;
+            --bg-medium: #334155;
+            --border-color: #475569;
+            --shadow-color: rgba(0, 0, 0, 0.2);
+            --shadow-color-hover: rgba(0, 0, 0, 0.25); /* Slightly darker shadow on hover */
+            --text-primary: #F1F5F9;
+            --text-secondary: #CBD5E1;
+            --text-muted: #94A3B8;
+            --text-on-accent: #FFFFFF;
+            --accent-primary: #3B82F6;
+            --accent-secondary: #10B981;
+            --milestone-color: var(--accent-secondary);
+            --milestone-bg: #064E3B;
+            --milestone-border: #10B981;
+            --icon-color: var(--text-secondary);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html {
+            font-size: 15px;
+        }
+
+        body {
+            background-color: var(--bg-medium);
+            color: var(--text-primary);
+            line-height: 1.45;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: calc(var(--space-unit) * 3);
+            overflow-x: hidden;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+
+        .slide-container {
+            width: 100%;
+            max-width: 1350px;
+            background-color: var(--bg-lightest);
+            border-radius: calc(var(--space-unit) * 1.5);
+            box-shadow: 0 6px 20px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            padding: calc(var(--space-unit) * 5);
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, box-shadow var(--transition-speed) ease;
+            margin: auto;
+            /* Define a max-height to prevent extreme stretching with scrollbars */
+            max-height: calc(100vh - var(--space-unit) * 6);
+        }
+
+        /* --- Dark Mode Toggle --- */
+        .theme-toggle {
+            position: absolute;
+            top: calc(var(--space-unit) * 2.5);
+            right: calc(var(--space-unit) * 3);
+            background: var(--bg-medium);
+            border: 1px solid var(--border-color);
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            z-index: 10;
+        }
+        .theme-toggle:hover {
+            background-color: var(--border-color);
+        }
+        .theme-toggle .icon-sun { display: none; }
+        .theme-toggle .icon-moon { display: inline; }
+        body.dark-mode .theme-toggle .icon-sun { display: inline; }
+        body.dark-mode .theme-toggle .icon-moon { display: none; }
+
+        header {
+            text-align: left;
+            margin-bottom: calc(var(--space-unit) * 4);
+            padding-bottom: calc(var(--space-unit) * 3);
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color var(--transition-speed) ease;
+            position: relative;
+            padding-right: 50px; /* Space for the toggle button */
+            flex-shrink: 0; /* Prevent header shrinking */
+        }
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: calc(var(--space-unit) * 0.5);
+            transition: color var(--transition-speed) ease;
+        }
+        .subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            transition: color var(--transition-speed) ease;
+            opacity: 0;
+            animation: fadeInSubtitle 1s ease-out 0.5s forwards;
+        }
+        @keyframes fadeInSubtitle {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .phases-container {
+            display: flex;
+            flex: 1; /* Allow container to grow and fill space */
+            gap: calc(var(--space-unit) * 5);
+            overflow: hidden; /* Hide overflow at this level */
+            flex-wrap: nowrap; /* Prevent wrapping to keep columns */
+        }
+        .phase {
+            flex: 1 1 50%; /* Allow shrinking but base is 50% */
+            min-width: 300px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Clip content within phase boundaries */
+        }
+
+        .phase-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: calc(var(--space-unit) * 3);
+            padding-bottom: calc(var(--space-unit) * 2);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 calc(var(--space-unit) * 1);
+            transition: border-color var(--transition-speed) ease;
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .phase-title {
+            font-size: 1.0rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: color var(--transition-speed) ease;
+            display: flex;
+            align-items: center;
+        }
+        /* Removed Phase Icons */
+        /* .phase-title::before { ... } */
+
+        .phase-badge {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+        }
+        .pilot .phase-badge { background-color: var(--accent-primary); color: var(--text-on-accent); }
+        .main .phase-badge { background-color: var(--accent-secondary); color: var(--text-on-accent); }
+
+        .steps-container {
+            flex: 1; /* Allow steps container to fill phase */
+            /* --- RESTORED SCROLLING --- */
+            overflow-y: auto;
+            padding: calc(var(--space-unit) * 1);
+             /* Adjust margin to avoid double padding */
+            margin-right: calc(var(--space-unit) * -1); /* Negative margin to extend scrollbar to edge */
+            padding-right: calc(var(--space-unit) * 2); /* Add padding back for scrollbar space */
+            margin-left: calc(var(--space-unit) * -1);
+            padding-left: calc(var(--space-unit) * 1);
+
+            /* Scrollbar Styling */
+            scrollbar-width: thin;
+            scrollbar-color: var(--border-color) transparent;
+        }
+        .steps-container::-webkit-scrollbar { width: 6px; }
+        .steps-container::-webkit-scrollbar-track { background: transparent; margin-top: var(--space-unit); margin-bottom: var(--space-unit); }
+        .steps-container::-webkit-scrollbar-thumb { background-color: var(--border-color); border-radius: 6px; border: 1px solid transparent; background-clip: content-box;}
+        .steps-container::-webkit-scrollbar-thumb:hover { background-color: var(--text-muted); }
+
+        .step {
+            background: var(--bg-medium);
+            border-radius: 4px;
+            padding: calc(var(--space-unit) * 2.5);
+            margin-bottom: calc(var(--space-unit) * 2.5);
+             /* Add margin-right to compensate for scrollbar padding */
+             margin-right: calc(var(--space-unit) * 1);
+            border: 1px solid var(--border-color);
+            position: relative; /* Needed for z-index on hover */
+             /* --- HOVER TRANSITION --- */
+            transition: transform var(--hover-transition-speed) ease-out,
+                        box-shadow var(--hover-transition-speed) ease-out,
+                        background-color var(--transition-speed) ease,
+                        border-color var(--transition-speed) ease;
+        }
+        .step.milestone {
+            border-left: 3px solid var(--milestone-color);
+            padding-left: calc(calc(var(--space-unit) * 2.5) - 3px + var(--space-unit) * 1.5);
+            background: var(--milestone-bg);
+            border-color: var(--milestone-border);
+            transition: background-color var(--transition-speed) ease,
+                        border-color var(--transition-speed) ease,
+                        border-left-color var(--transition-speed) ease,
+                        transform var(--hover-transition-speed) ease-out,
+                        box-shadow var(--hover-transition-speed) ease-out;
+        }
+        /* --- HOVER EFFECT --- */
+        .step:hover {
+            transform: translateY(-3px) scale(1.015); /* Subtle lift and scale */
+            box-shadow: 0 8px 25px var(--shadow-color-hover);
+            z-index: 1; /* Bring to front */
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: calc(var(--space-unit) * 1.5);
+        }
+        .step-number {
+            width: 18px; height: 18px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.7rem; font-weight: 600;
+            margin-right: calc(var(--space-unit) * 2); flex-shrink: 0;
+            color: var(--text-on-accent);
+            transition: background-color var(--transition-speed) ease;
+        }
+        .pilot .step-number { background-color: var(--accent-primary); }
+        .main .step-number { background-color: var(--accent-secondary); }
+
+        .step-title {
+            font-size: 0.85rem; font-weight: 500;
+            color: var(--text-primary);
+            transition: color var(--transition-speed) ease;
+            display: flex; align-items: center;
+        }
+         /* Removed Step Title Icons */
+         /* .step-title::before { ... } */
+
+        .milestone-badge {
+            margin-left: auto; padding: 3px 8px;
+            border-radius: 4px;
+            background-color: var(--milestone-color); color: var(--text-on-accent);
+            font-size: 0.65rem;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; line-height: 1;
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            display: flex; align-items: center;
+        }
+         /* Removed Milestone Icon */
+         /* .milestone-badge::before { ... } */
+
+        .step-group { margin-top: calc(var(--space-unit) * 1.5); padding-left: calc(18px + var(--space-unit) * 2); }
+        .group-title {
+            font-size: 0.7rem;
+            font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em;
+            margin-bottom: calc(var(--space-unit) * 0.75);
+            color: var(--text-muted);
+            transition: color var(--transition-speed) ease;
+            opacity: 0.9;
+        }
+        .pilot .group-title { color: var(--accent-primary); }
+        .main .group-title { color: var(--accent-secondary); }
+
+        .group-item {
+            font-size: 0.8rem;
+            color: var(--text-secondary); position: relative;
+            padding-left: calc(var(--space-unit) * 2.5);
+            margin-bottom: calc(var(--space-unit) * 0.75);
+            line-height: 1.4;
+            transition: color var(--transition-speed) ease;
+        }
+        .group-item:before {
+            content: "•"; position: absolute; left: 0; top: 2px;
+            font-weight: 600; color: var(--text-muted); font-size: 0.8em;
+            transition: color var(--transition-speed) ease;
+        }
+        .note {
+            font-style: italic; color: var(--text-muted); margin-left: 4px;
+            transition: color var(--transition-speed) ease;
+            opacity: 0.9;
+        }
+
+        footer {
+            margin-top: calc(var(--space-unit) * 4);
+            padding-top: calc(var(--space-unit) * 2);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap;
+            gap: calc(var(--space-unit) * 1);
+            transition: border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            flex-shrink: 0; /* Prevent footer shrinking */
+        }
+        .footer-left, .footer-right { flex-basis: auto; }
+        .footer-right { text-align: right; margin-left: auto; }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .phases-container {
+                flex-direction: column; /* Stack phases */
+                flex: 1 1 auto; /* Allow shrinking */
+                overflow: visible; /* Allow content to flow */
+            }
+            .phase {
+                 flex: 1 1 auto; /* Reset flex basis */
+                 max-height: 50vh; /* Limit height in stacked view */
+                 min-width: 0;
+            }
+            .slide-container {
+                 padding: calc(var(--space-unit) * 3);
+                 max-height: none; /* Allow container to grow vertically */
+                 height: auto; /* Let content determine height */
+            }
+            header { padding-right: 45px; }
+            footer { flex-direction: column; align-items: flex-start; }
+            .footer-right { margin-left: 0; text-align: left; }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="slide-container">
+        <button id="theme-toggle" class="theme-toggle" title="Toggle light/dark mode">
+            <span class="icon-moon">🌙</span>
+            <span class="icon-sun">☀️</span>
+        </button>
+
+        <header>
+            <h1>Cartilage-Seated Rim Trimming Guide: Validation Study</h1>
+            <div class="subtitle">Study Design Flowchart: Pilot (3D Prints) & Main (Cadaveric) Phases</div>
+        </header>
+
+        <div class="phases-container">
+            <div class="phase pilot">
+                <div class="phase-header">
+                    <div class="phase-title">Pilot Phase</div>
+                    <div class="phase-badge">3D Prints (n=6)</div>
+                </div>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-header"><div class="step-number">1</div><div class="step-title">Data Prep</div></div>
+                        <div class="step-group"><div class="group-title">Action</div><div class="group-item">Auto-segment MRI datasets (Criteria: LCEA > 40°, no PAO, RI < 30%)</div></div>
+                        <div class="step-group"><div class="group-title">Output</div><div class="group-item">3D segmentations for printing</div></div>
+                    </div>
+                    <div class="step">
+                         <div class="step-header"><div class="step-number">2</div><div class="step-title">Model Fabrication & Imaging</div></div>
+                         <div class="step-group"><div class="group-title">Action</div>
+                             <div class="group-item">3D-print hemipelvis models <span class="note">(radiopaque)</span></div>
+                             <div class="group-item">Acquire Standard/Artificial X-rays <span class="note">(from MRI/Print)</span></div>
+                         </div>
+                         <div class="step-group"><div class="group-title">Output</div><div class="group-item">Physical 3D models + matched X-rays <span class="note">(Sharp angle)</span></div></div>
+                     </div>
+                     <div class="step">
+                         <div class="step-header"><div class="step-number">3</div><div class="step-title">Guide Planning & Production</div></div>
+                         <div class="step-group"><div class="group-title">Action</div>
+                             <div class="group-item">Target trim depth from pre-trim Sharp angle</div>
+                             <div class="group-item">Design/print the pilot guide (90° arc)</div>
+                         </div>
+                         <div class="step-group"><div class="group-title">Output</div><div class="group-item">Pilot guide prototype (V1.x)</div></div>
+                     </div>
+                     <div class="step milestone">
+                         <div class="step-header"><div class="step-number">4</div><div class="step-title">Guided Trimming & Evaluation</div><div class="milestone-badge">Milestone</div></div>
+                         <div class="step-group"><div class="group-title">Action</div>
+                             <div class="group-item">Rim trimming on printed models with the guide</div>
+                             <div class="group-item">Take Post-trim Standard/Artificial X-rays</div>
+                         </div>
+                         <div class="step-group"><div class="group-title">Measurement</div>
+                             <div class="group-item">Compare planned vs. achieved trim depth (Target: ±1 mm) and arc (Target: ±5°)</div>
+                             <div class="group-item">Assess Sharp angle change</div>
+                         </div>
+                     </div>
+                     <div class="step">
+                         <div class="step-header"><div class="step-number">5</div><div class="step-title">Analysis & Refinement</div></div>
+                         <div class="step-group"><div class="group-title">Action</div><div class="group-item">Compile accuracy data <span class="note">(caliper, X-ray angles)</span>, refine guide fit, finalize measurement SOPs</div></div>
+                         <div class="step-group"><div class="group-title">Output</div>
+                             <div class="group-item">Updated guide design (V2.0)</div>
+                             <div class="group-item">Validated Measurement SOPs</div>
+                             <div class="group-item">Baseline accuracy stats</div>
+                         </div>
+                     </div>
+                </div> </div> <div class="phase main">
+                <div class="phase-header">
+                    <div class="phase-title">Main Phase: Validation</div>
+                    <div class="phase-badge">Cadavers (n=12 hips)</div>
+                </div>
+                <div class="steps-container">
+                    <div class="step milestone">
+                          <div class="step-header"><div class="step-number">1</div><div class="step-title">Cadaver & Baseline Prep</div><div class="milestone-badge">Milestone</div></div>
+                         <div class="step-group"><div class="group-title">Action</div>
+                             <div class="group-item">Pre-op MRI, Standard/Artificial X-rays</div>
+                             <div class="group-item">Auto-segment MRI</div>
+                         </div>
+                          <div class="step-group"><div class="group-title">Output/Baseline</div>
+                             <div class="group-item">3D segmentation + Pre-op coverage metrics</div>
+                             <div class="group-item">Pre-op LCEA</div>
+                         </div>
+                     </div>
+                     <div class="step">
+                          <div class="step-header"><div class="step-number">2</div><div class="step-title">Guide Planning & Production</div></div>
+                         <div class="step-group"><div class="group-title">Action</div>
+                             <div class="group-item">Target trim depth based on LCEA formulas</div>
+                             <div class="group-item">Design/print guide V1.0 (90° arc)</div>
+                         </div>
+                         <div class="step-group"><div class="group-title">Output</div>
+                             <div class="group-item">Patient-specific guide</div>
+                         </div>
+                     </div>
+                     <div class="step">
+                          <div class="step-header"><div class="step-number">3</div><div class="step-title">Guided Trimming</div></div>
+                         <div class="step-group"><div class="group-title">Action</div><div class="group-item">Open rim trimming using the cartilage-seated guide</div></div>
+                     </div>
+                     <div class="step milestone">
+                          <div class="step-header"><div class="step-number">4</div><div class="step-title">Post-Op Imaging & Evaluation</div><div class="milestone-badge">Milestone</div></div>
+                         <div class="step-group"><div class="group-title">Action</div>
+                             <div class="group-item">Post-op MRI, Standard/Artificial X-rays</div>
+                             <div class="group-item">Post-op Segmentation</div>
+                         </div>
+                         <div class="step-group"><div class="group-title">Primary Aim Eval: Trim Accuracy</div>
+                             <div class="group-item">Method 1: Direct Caliper vs Plan (Target: ±1mm)</div>
+                             <div class="group-item">Method 2: MRI Segmentation Superposition vs Plan (Target: ±5° arc)</div>
+                         </div>
+                         <div class="step-group"><div class="group-title">Secondary Aim Eval: LCEA Prediction</div>
+                             <div class="group-item">Actual LCEA Δ <span class="note">(Std & Artif. X-rays)</span> vs Predicted Δ (Target: ±2°)</div>
+                         </div>
+                         <div class="step-group"><div class="group-title">Tertiary Aim Eval: Correlation & 3D Params</div>
+                               <div class="group-item">Correlate: Measured Depth vs LCEA Δ</div>
+                               <div class="group-item">Analyze 3D Coverage / Cartilage Area Changes</div>
+                         </div>
+                     </div>
+                     <div class="step">
+                         <div class="step-header"><div class="step-number">5</div><div class="step-title">Final Analysis & Deliverables</div></div>
+                         <div class="step-group"><div class="group-title">Action</div><div class="group-item">Statistical comparison (planned vs. actual); accuracy, reliability, correlation</div></div>
+                         <div class="step-group"><div class="group-title">Output</div>
+                             <div class="group-item">Guide accuracy metrics (mean error ± SD)</div>
+                             <div class="group-item">Refined predictive model (depth vs. LCEA)</div>
+                             <div class="group-item">3D coverage impact</div>
+                             <div class="group-item">Final validation report</div>
+                         </div>
+                     </div>
+                </div> </div> </div> <footer>
+              <div class="footer-left">S. Schaible | Acetabular Guide Validation</div>
+               <div class="footer-right">Confidential | Status: March 30, 2025</div>
+        </footer>
+    </div> <script>
+        const themeToggle = document.getElementById('theme-toggle');
+        const currentTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // Function to apply theme
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                document.body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        }
+
+        // Initial theme check: localStorage > prefers-color-scheme > default (light)
+        let initialTheme = 'light'; // Default
+        if (currentTheme) {
+            initialTheme = currentTheme; // Use stored theme if available
+        } else if (prefersDark) {
+            initialTheme = 'dark'; // Use system preference if no stored theme
+        }
+        applyTheme(initialTheme);
+
+
+        // Toggle button event listener
+        themeToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('dark-mode')) {
+                applyTheme('light');
+            } else {
+                applyTheme('dark');
+            }
+        });
+
+        // Optional: Listen for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+             // Only change if NO theme is explicitly stored by user preference
+            if (!localStorage.getItem('theme')) {
+                 applyTheme(e.matches ? 'dark' : 'light');
+             }
+        });
+
+        // Removed the JavaScript block that added icons dynamically
+
+    </script>
+</body>
+</html>
